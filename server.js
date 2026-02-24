@@ -1,9 +1,20 @@
 import express from "express";
 import OpenAI from "openai";
+import cors from "cors";
 import "dotenv/config";
+
+
+const API_URL = process.env.VITE_API_URL || 'http://localhost:4001';
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
+
+app.use(cors({
+    origin: API_URL,
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"]
+}));
+
 // Initialize an OpenAI client for your provider using env vars
 const openai = new OpenAI({
     apiKey: process.env.AI_KEY,
