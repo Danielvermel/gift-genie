@@ -33,6 +33,7 @@ const messages = [
         You generate gift ideas that feel thoughtful, specific, and genuinely useful.
         Your output must be in structured Markdown.
         Do not write introductions or conclusions.
+        If the user mentions something that is not related to the gifts or less than 2 words just say you don't know how to help with that.
         Start directly with the gift suggestions in a numerical list.
 
         Each gift must:
@@ -47,7 +48,7 @@ const messages = [
         After the gift ideas, include a section with titled "Questions for you"
         with clarifying questions that would help improve the recommendations. 
         This title should be well seperated from the gift ideas, it should have a division 
-        and be bold.`,
+        and be bold. Only add this section if you have recomendations to give`,
     },
 ];
 
