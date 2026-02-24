@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json({ limit: "10mb" }));
 
 app.use(cors({
-    origin:"https://gift-genie-fvqs.onrender.com",
+    origin: true,
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"]
 }));
