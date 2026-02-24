@@ -1,6 +1,8 @@
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { autoResizeTextarea, setLoading } from "./utils.js";
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4001';  // Dev fallback
+
 
 // Get UI elements
 const giftForm = document.getElementById("gift-form");
@@ -67,7 +69,7 @@ async function handleGiftRequest(e) {
 
     try {
         // TODO: Step 1 — send fetch request to /api/gift
-        const response = await fetch("/api/gift", {
+        const response = await fetch(`${API_URL}/api/gift`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userPrompt }),
