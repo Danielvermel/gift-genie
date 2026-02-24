@@ -6,6 +6,7 @@
     "scripts": {
         "start": "concurrently \"npm run client\" \"npm run server\" ",
         "server": "node --watch server.js",
+        "live-server":  "node server.js",
         "client": "vite",
         "build": "vite build",
         "preview": "vite preview"
@@ -17,9 +18,12 @@
     "author": "Daniel Leite",
     "license": "ISC",
     "dependencies": {
+        "cors": "^2.8.6",
         "dompurify": "^3.3.1",
+        "dotenv": "^17.3.1",
         "express": "^5.2.1",
-        "marked": "^17.0.3"
+        "marked": "^17.0.3",
+        "openai": "^6.24.0"
     },
     "devDependencies": {
         "concurrently": "^9.2.1",
