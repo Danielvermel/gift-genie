@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+        <title>Gift Genie</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="app-container">
+            <header class="app-header">
+                <div class="title-group">
+                    <img src="assets/genie.svg" alt="Genie" class="genie-icon-img" />
+                    <h1>Gift Genie</h1>
+                </div>
+            </header>
+
+            <section class="intro-section">
+                <div class="intro-content">
+                    <h2 class="intro-title">Find the Perfect Gift in Seconds</h2>
+                    <p class="intro-subtitle">Your AI-powered genie for personalized gift suggestions</p>
+                    
+                    <button id="get-started-btn" class="get-started-btn">Let's Get Started</button>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <span class="feature-icon">🎁</span>
+                            <h3>Personalized</h3>
+                            <p>Tailored suggestions based on interests, occasion, and budget</p>
+                        </div>
+                        <div class="feature-card">
+                            <span class="feature-icon">⚡</span>
+                            <h3>Instant</h3>
+                            <p>Get curated gift ideas in seconds, not hours</p>
+                        </div>
+                        <div class="feature-card">
+                            <span class="feature-icon">🌟</span>
+                            <h3>Smart</h3>
+                            <p>AI-powered recommendations that actually make sense</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <main class="main-content hidden" id="main-content">
+                <form id="gift-form" class="gift-form">
+                    <div class="input-section">
+                        <div class="input-wrapper">
+                            <textarea
+                                id="user-input"
+                                placeholder="e.g. My friend who loves candles has a birthday coming up in 3 days. 15-20 pounds budget. I live in..."
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="lamp-container">
+                        <button type="submit" id="lamp-button" class="lamp-btn" aria-label="Rub the Lamp">
+                            <span class="lamp-icon">
+                                <img src="assets/lamp.svg" alt="Magic Lamp" class="lamp-icon-img" />
+                            </span>
+                            <span class="lamp-text">Rub the Lamp</span>
+                        </button>
+                    </div>
+
+                    <div class="progress-container hidden" id="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <p class="progress-text">Consulting the genie...</p>
+                    </div>
+                </form>
+
+                <section class="output-section">
+                    <div id="output-container" class="hidden">
+                        <div id="output-content"></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <script type="module" src="./index.js"></script>
+    </body>
+</html>
