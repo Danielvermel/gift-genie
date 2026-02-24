@@ -3,19 +3,20 @@ import OpenAI from "openai";
 import cors from "cors";
 import "dotenv/config";
 
+const API_URL = process.env.VITE_API_URL || "http://localhost:4000";
 
-const API_URL = process.env.VITE_API_URL || 'http://localhost:4000';
-
-console.log('API_URL: ', API_URL)
+console.log("API_URL: ", API_URL);
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
 
-app.use(cors({
-    origin: true,
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"]
-}));
+app.use(
+    cors({
+        origin: true,
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Content-Type"],
+    })
+);
 
 // Initialize an OpenAI client for your provider using env vars
 const openai = new OpenAI({
@@ -37,20 +38,22 @@ const messages = [
         Each gift must:
         - Have a clear heading
         - Include a short explanation of why it works
+        - Include a numerical list for each heading
 
         If the user mentions a location, situation, or constraint,
         adapt the gift ideas and add another short section 
         under each gift that guides the user to get the gift in that 
         constrained context.
 
-        After the gift ideas, include a section titled "Questions for you"
-        with clarifying questions that would help improve the recommendations.`,
+        After the gift ideas, include a section with titled "Questions to best tailor your next prompt"
+        with clarifying questions that would help improve the recommendations. 
+        This title should be well seperated from the gift ideas, it should have a division 
+        and be bold.`,
     },
 ];
 
-// Challenge: See challenge.md for instructions
 app.post("/api/gift", async (req, res) => {
-    // TODO: Step 2 — extract userPrompt from req.body and add to messages
+    // Extract userPrompt from req.body and add to messages
     const { userPrompt } = req.body;
 
     if (!userPrompt) return res.status(400).json({ error: "No userPrompt" });
@@ -61,13 +64,13 @@ app.post("/api/gift", async (req, res) => {
     });
 
     try {
-        // TODO: Step 3 — send chat completions request
+        // Send chat completions request
         const response = await openai.chat.completions.create({
             model: process.env.AI_MODEL,
             messages,
         });
 
-        // TODO: Step 4 — extract content and send back as JSON
+        // Extract content and send back as JSON
         const giftSuggestions = response.choices[0].message.content;
         console.log(giftSuggestions);
 

@@ -13,6 +13,10 @@ const mainContent = document.getElementById("main-content");
 const introSection = document.querySelector(".intro-section");
 const progressContainer = document.getElementById("progress-container");
 const progressFill = document.getElementById("progress-fill");
+const resetButton = document.getElementById("reset-button");
+const clearButton = document.getElementById("clear-button");
+const askAgainSection = document.getElementById("ask-again-section");
+const askAgainBtn = document.getElementById("ask-again-btn");
 
 function start() {
     // Setup UI event listeners
@@ -33,6 +37,39 @@ function start() {
         introSection.classList.add("hidden");
         mainContent.classList.remove("hidden");
         userInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        userInput.focus();
+    });
+    
+    resetButton?.addEventListener("click", () => {
+        mainContent.classList.add("hidden");
+        introSection.classList.remove("hidden");
+        userInput.value = "";
+        userInput.style.height = "auto";
+        outputContent.innerHTML = "";
+        outputContent.parentElement.classList.remove("visible");
+        outputContent.parentElement.classList.add("hidden");
+    });
+    
+    clearButton?.addEventListener("click", () => {
+        outputContent.innerHTML = "";
+        outputContent.parentElement.classList.remove("visible");
+        outputContent.parentElement.classList.add("hidden");
+        askAgainSection.classList.add("hidden");
+        giftForm.classList.remove("hidden");
+        userInput.value = "";
+        userInput.style.height = "auto";
+        userInput.focus();
+    });
+    
+    askAgainBtn?.addEventListener("click", () => {
+        askAgainSection.classList.add("hidden");
+        giftForm.classList.remove("hidden");
+        outputContent.innerHTML = "";
+        outputContent.parentElement.classList.remove("visible");
+        outputContent.parentElement.classList.add("hidden");
+        userInput.value = "";
+        userInput.style.height = "auto";
+        userInput.placeholder = "e.g. My friend who loves candles has a birthday coming up in 3 days. 15-20 pounds budget. I live in...";
         userInput.focus();
     });
 }
@@ -97,9 +134,11 @@ async function handleGiftRequest(e) {
         // Render the result
         outputContent.innerHTML = safeHTML;
         
-        // Show output
+        // Show output and hide form
         outputContent.parentElement.classList.remove("hidden");
         outputContent.parentElement.classList.add("visible");
+        giftForm.classList.add("hidden");
+        askAgainSection.classList.remove("hidden");
     } catch (error) {
         // Log the error for debugging
         console.error("error: ", error);
