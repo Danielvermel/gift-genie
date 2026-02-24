@@ -4,13 +4,15 @@ import cors from "cors";
 import "dotenv/config";
 
 
-const API_URL = process.env.VITE_API_URL || 'http://localhost:4001';
+const API_URL = process.env.VITE_API_URL || 'http://localhost:4000';
+
+console.log('API_URL: ', API_URL)
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
 
 app.use(cors({
-    origin: API_URL,
+    origin:"https://gift-genie-fvqs.onrender.com",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"]
 }));
