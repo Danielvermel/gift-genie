@@ -1,0 +1,28 @@
+{
+    "name": "gift-genie",
+    "version": "1.0.0",
+    "description": "web app for gift ideas",
+    "main": "index.js",
+    "scripts": {
+        "start": "concurrently \"npm run client\" \"npm run server\" ",
+        "server": "node --watch server.js",
+        "client": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Danielvermel/gift-genie.git"
+    },
+    "author": "Daniel Leite",
+    "license": "ISC",
+    "dependencies": {
+        "dompurify": "^3.3.1",
+        "express": "^5.2.1",
+        "marked": "^17.0.3"
+    },
+    "devDependencies": {
+        "concurrently": "^9.2.1",
+        "vite": "^7.3.1"
+    }
+}
