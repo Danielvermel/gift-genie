@@ -220,6 +220,7 @@ h1 {
     cursor: pointer;
     transition: all var(--transition-quick);
     margin-bottom: var(--space-xl);
+    margin-top: var(--space-xl);
     box-shadow: 0 4px 15px rgba(255, 200, 100, 0.3);
 }
 
@@ -231,6 +232,65 @@ h1 {
 
 .get-started-btn:active {
     transform: translateY(0);
+}
+
+/*
+     Mobile Advantages List
+  */
+
+.mobile-advantages {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-xl) 0;
+    display: block;
+}
+
+.mobile-advantages li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: calc(var(--space-sm) / 2);
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-sm);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    transition: all var(--transition-quick);
+}
+
+.mobile-advantages li:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.advantage-icon {
+    font-size: 1.75rem;
+    flex-shrink: 0;
+}
+
+.advantage-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.advantage-title {
+    color: var(--accent-primary);
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.advantage-text {
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+}
+
+@media (min-width: 769px) {
+    .mobile-advantages {
+        display: none;
+    }
 }
 
 /*
@@ -648,39 +708,62 @@ textarea::placeholder {
   */
 
 @media (max-width: 768px) {
+    body {
+        overflow-y: hidden;
+    }
+
     .app-container {
         padding: 1.25rem 1.25rem;
     }
 
+    .app-header {
+        /*position: fixed;*/
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background-color: var(--bg-primary);
+        padding: var(--space-md) 1.25rem;
+        margin: 0;
+    }
+
+    .intro-section {
+        position: fixed;
+        top: 100px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+        background-color: var(--bg-primary);
+        min-height: calc(100vh - 100px);
+        padding: var(--space-xl) 1.25rem;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
     .features-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-md);
+        display: none;
     }
 
-    .feature-card {
-        padding: var(--space-md);
+    .mobile-advantages {
+        display: block;
     }
 
-    .feature-icon {
-        font-size: 2.5rem;
+    .get-started-btn {
+        padding: var(--space-md) var(--space-xl);
+        font-size: 1.125rem;
     }
 
-    .feature-card h3 {
-        font-size: 1.25rem;
+    .main-content.hidden ~ .intro-section {
+        overflow-y: auto;
     }
+}
 
-    .feature-card p {
-        font-size: 1rem;
-    }
-
-    .lamp-icon-img {
-        width: 120px;
-        height: 120px;
-    }
-
-    .lamp-btn.compact .lamp-icon-img {
-        width: 72px;
-        height: 72px;
+@media (min-width: 769px) {
+    .features-grid {
+        display: grid;
     }
 }
 
@@ -689,18 +772,27 @@ textarea::placeholder {
         padding: 1rem 1rem;
     }
 
+    .app-header {
+        padding: var(--space-sm) 1rem;
+    }
+
+    .intro-section {
+        top: 0px;
+        min-height: calc(100vh - 80px);
+        padding: var(--space-lg) 1rem;
+    }
+
     .title-group {
-        margin-top: 2rem;
-        gap: 0.2rem;
+        gap: var(--space-lg);
     }
 
     .genie-icon-img {
-        width: 80px;
-        height: 80px;
+        width: 56px;
+        height: 56px;
     }
 
     h1 {
-        font-size: 2.5rem;
+        font-size: 1.5rem;
     }
 
     .reset-btn {
@@ -713,11 +805,6 @@ textarea::placeholder {
         transform: translateX(-50%);
     }
 
-    .intro-section {
-        padding: var(--space-lg) 0;
-        margin-bottom: var(--space-lg);
-    }
-
     .intro-title {
         font-size: 1.5rem;
     }
@@ -727,30 +814,26 @@ textarea::placeholder {
         margin-bottom: var(--space-md);
     }
 
-    .features-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-md);
-    }
-
-    .feature-card {
+    .mobile-advantages li {
         padding: var(--space-sm);
+        gap: var(--space-sm);
     }
 
-    .feature-icon {
-        font-size: 2.25rem;
+    .advantage-icon {
+        font-size: 1.75rem;
     }
 
-    .feature-card h3 {
-        font-size: 1.5rem;
+    .advantage-title {
+        font-size: 0.9375rem;
     }
 
-    .feature-card p {
-        font-size: 1rem;
+    .advantage-text {
+        font-size: 0.8125rem;
     }
 
     .get-started-btn {
-        padding: var(--space-sm) var(--space-lg);
-        font-size: 1rem;
+        padding: var(--space-md) var(--space-xl);
+        font-size: 1.125rem;
         margin-bottom: var(--space-lg);
     }
 

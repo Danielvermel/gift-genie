@@ -36,6 +36,7 @@ function start() {
     getStartedBtn?.addEventListener("click", () => {
         introSection.classList.add("hidden");
         mainContent.classList.remove("hidden");
+        document.body.style.overflowY = "auto";
         userInput.scrollIntoView({ behavior: "smooth", block: "center" });
         userInput.focus();
     });
@@ -43,11 +44,14 @@ function start() {
     resetButton?.addEventListener("click", () => {
         mainContent.classList.add("hidden");
         introSection.classList.remove("hidden");
+        document.body.style.overflowY = "hidden";
         userInput.value = "";
         userInput.style.height = "auto";
         outputContent.innerHTML = "";
         outputContent.parentElement.classList.remove("visible");
         outputContent.parentElement.classList.add("hidden");
+        askAgainSection.classList.add("hidden");
+        giftForm.classList.remove("hidden");
     });
     
     clearButton?.addEventListener("click", () => {
