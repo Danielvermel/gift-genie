@@ -1,7 +1,7 @@
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { autoResizeTextarea, setLoading } from "./utils.js";
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4001';  // Dev fallback
+const API_URL = import.meta.env.NODE_API_URL || 'http://localhost:4001';  // Dev fallback
 
 
 // Get UI elements
