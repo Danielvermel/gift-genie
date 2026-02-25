@@ -16,6 +16,7 @@
     --space-md: 1rem;
     --space-lg: 1.5rem;
     --space-xl: 2rem;
+    --space-xxl: 2.5rem;
 
     /* Animation */
     --transition-quick: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -65,6 +66,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: var(--space-xl);
+}
+
+@media (min-width: 769px) {
+    .app-header {
+        padding-top: var(--space-lg);
+    }
 }
 
 .reset-btn {
@@ -241,7 +249,7 @@ h1 {
 .mobile-advantages {
     list-style: none;
     padding: 0;
-    margin: 0 0 var(--space-xl) 0;
+    margin: var(--space-xl) 0 var(--space-xl) 0;
     display: block;
 }
 
@@ -299,7 +307,17 @@ h1 {
 
 .main-content {
     animation: fadeInUp 0.6s var(--transition-smooth);
-    margin-top: var(--space-lg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 40%;
+}
+
+@media (min-width: 769px) {
+    .main-content {
+        min-height: calc(100vh - 200px);
+    }
 }
 
 /*
@@ -338,7 +356,7 @@ textarea {
     border-radius: 0;
     line-height: 1.5;
     padding: 0.75rem 0;
-    padding-right: 5rem;
+    padding-right: 2rem;
     color: var(--text-primary);
     font-size: 1.2rem;
     font-family: inherit;
@@ -751,9 +769,17 @@ textarea::placeholder {
         display: block;
     }
 
+    .mobile-advantages li {
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    .advantage-icon {
+        display: none;
+    }
+
     .get-started-btn {
-        padding: var(--space-md) var(--space-xl);
-        font-size: 1.125rem;
+        padding: var(--space-sm) var(--space-lg);
+        font-size: 1rem;
     }
 
     .main-content.hidden ~ .intro-section {
@@ -773,7 +799,7 @@ textarea::placeholder {
     }
 
     .app-header {
-        padding: var(--space-sm) 1rem;
+        padding: var(--space-md) 1rem;
     }
 
     .intro-section {
@@ -871,9 +897,13 @@ textarea::placeholder {
     }
 
     textarea {
-        font-size: 1.125rem;
+        font-size: 1rem;
         min-height: calc(1.5em * 3 + 1rem);
-        padding-right: 4rem;
+        padding-right: 2rem;
+    }
+
+    textarea::placeholder {
+        font-size: 0.875rem;
     }
 
     #output-content {
@@ -881,11 +911,11 @@ textarea::placeholder {
     }
 
     .lamp-text {
-        font-size: 1.5rem;
+        font-size: 1.125rem;
     }
 
     .lamp-btn.compact .lamp-text {
-        font-size: 1rem;
+        font-size: 0.875rem;
     }
 
     .lamp-btn {
@@ -894,17 +924,17 @@ textarea::placeholder {
     }
 
     .lamp-icon-img {
-        width: 120px;
-        height: 120px;
-    }
-
-    .lamp-btn.compact .lamp-icon-img {
         width: 80px;
         height: 80px;
     }
 
+    .lamp-btn.compact .lamp-icon-img {
+        width: 60px;
+        height: 60px;
+    }
+
     .lamp-container {
-        margin: var(--space-md) 0 var(--space-md);
+        margin: var(--space-xl) 0 var(--space-md);
     }
 
     #output-content h3,
