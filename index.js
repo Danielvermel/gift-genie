@@ -148,9 +148,15 @@ async function handleGiftRequest(e) {
         console.error("error: ", error);
 
         // Display friendly error message
-        outputContent.textContent = "Sorry, I can't access what I need right now. Please try again in a bit.";
+        outputContent.innerHTML = `<div class="error-box">
+            <span class="error-icon">⚠️</span>
+            <p><strong>Oops! The Genie is taking a nap.</strong></p>
+            <p>The server might be dormant. Please try again.</p>
+        </div>`;
         outputContent.parentElement.classList.remove("hidden");
         outputContent.parentElement.classList.add("visible");
+        askAgainSection.classList.remove("hidden");
+        giftForm.classList.add("hidden");
     } finally {
         // Restore lamp to compact state
         lampButton.classList.remove("loading");

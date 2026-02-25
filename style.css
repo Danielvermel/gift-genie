@@ -616,6 +616,52 @@ textarea::placeholder {
     transform: translateY(0);
 }
 
+/*
+     Error Box
+  */
+
+.error-box {
+    background: rgba(255, 100, 100, 0.1);
+    border: 1px solid rgba(255, 100, 100, 0.3);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: var(--space-lg) 0;
+}
+
+.error-icon {
+    font-size: 2.5rem;
+}
+
+.error-box p {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.error-box strong {
+    color: var(--accent-primary);
+}
+
+@media (max-width: 768px) {
+    .error-box {
+        padding: var(--space-md);
+    }
+
+    .error-icon {
+        font-size: 2rem;
+    }
+
+    .error-box p {
+        font-size: 0.9375rem;
+    }
+}
+
 #output-container {
     opacity: 0;
     transition: opacity var(--transition-smooth);
