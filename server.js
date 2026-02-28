@@ -4,8 +4,10 @@ import cors from "cors";
 import "dotenv/config";
 
 const API_URL = process.env.VITE_API_URL || "http://localhost:4000";
+const PORT = process.env.PORT || 4000;
 
 console.log("API_URL: ", API_URL);
+console.log("Server running on port:", PORT);
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
@@ -57,9 +59,27 @@ const getSystemPrompt = () => {
     
     **Analyze the user input first: If it provides specific data (e.g., recipient interests, age, budget, occasion), generate suggestions. ONLY if there is meaningful data to build on, end with a section titled "Questions for You" with 2-3 clarifying questions that would help improve the recommendations. This section must:
     - Be separated with a horizontal rule (---)
+    - Have margin top of at 20 pixels from the texg before
     - Have a bold heading
     - Contain specific follow-up questions based on the gifts suggested.**
     
+    When generating the "Questions for You" section:
+
+    - Your questions must feel practical and personal — not generic.
+    - Base them directly on what you inferred about the recipient (age, interests, lifestyle, location, or context).
+    - Always ask 2–3 short questions that would help refine future gift suggestions.
+    - Examples of good types of questions:
+      - Clarify recipient preferences (style, fitness level, hobbies, or type of activity).
+      - Check practical constraints (budget, delivery time, or item availability).
+      - Explore emotional tone or relationship (occasion, level of closeness).
+
+    Example templates:
+    - "Would you prefer a tech-focused or more sentimental gift for them?"
+    - "Do they already have similar gear (like a smartwatch or tracker)?"
+    - "What’s your ideal budget range for this gift?"
+    - "Should the gift arrive before a specific date or event?"
+    - "Would they enjoy something more personalized or ready-made?"
+
     If no specific data is provided (e.g., vague query like "gift ideas"), do NOT include the Questions section.`;
 
     return {
@@ -147,7 +167,6 @@ app.get("/test", (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });

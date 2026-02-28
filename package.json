@@ -2,6 +2,7 @@
     "name": "gift-genie",
     "version": "1.0.3",
     "description": "web app for gift ideas",
+    "type": "module",
     "main": "index.js",
     "scripts": {
         "start": "concurrently \"npm run client\" \"npm run server\" ",

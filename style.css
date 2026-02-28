@@ -41,6 +41,15 @@ body {
     overflow-x: hidden;
 }
 
+a {
+    color: var(--accent-primary);
+}
+
+
+p {
+    margin-top: 20px;
+}
+
 /* 
      Layout
   */
