@@ -330,6 +330,12 @@ h1 {
 
 .input-section {
     position: relative;
+    transition: opacity 0.3s ease;
+}
+
+.input-section.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .input-wrapper {
@@ -447,7 +453,8 @@ textarea::placeholder {
     flex-direction: column;
     align-items: center;
     margin-top: var(--space-lg);
-    transition: opacity 0.3s ease;
+    transition: opacity 0.5s ease;
+    opacity: 1;
 }
 
 .progress-container.hidden {
@@ -458,9 +465,9 @@ textarea::placeholder {
 .progress-bar {
     width: 100%;
     max-width: 400px;
-    height: 4px;
+    height: 6px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
+    border-radius: 3px;
     overflow: hidden;
     position: relative;
 }
@@ -469,16 +476,48 @@ textarea::placeholder {
     height: 100%;
     width: 0%;
     background: linear-gradient(90deg, var(--accent-primary), var(--accent-glow));
-    border-radius: 2px;
+    border-radius: 3px;
     transition: width 0.3s ease;
-    box-shadow: 0 0 10px var(--accent-glow);
+    box-shadow: 0 0 15px var(--accent-glow);
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-50px);
+    }
+    100% {
+        transform: translateX(200px);
+    }
 }
 
 .progress-text {
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     margin-top: var(--space-sm);
-    opacity: 0.8;
+    opacity: 1;
+    font-weight: 500;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
 }
 
 /*
@@ -490,7 +529,12 @@ textarea::placeholder {
     flex-direction: column;
     align-items: center;
     margin: var(--space-xl) 0 var(--space-md);
-    transition: all var(--transition-smooth);
+    transition: opacity var(--transition-smooth);
+}
+
+.lamp-container.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .lamp-btn {
@@ -558,7 +602,12 @@ textarea::placeholder {
 }
 
 .lamp-btn.loading .lamp-icon-img {
-    animation: rubLamp 0.8s ease-in-out infinite;
+    animation: rubLamp 1.2s ease-in-out infinite;
+}
+
+.lamp-btn.loading .lamp-text {
+    color: var(--accent-primary);
+    animation: pulse 1.5s ease-in-out infinite;
 }
 
 /*
@@ -579,12 +628,13 @@ textarea::placeholder {
     margin-top: var(--space-lg);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     transition: opacity 0.3s ease;
+    position: relative;
+    z-index: 10;
 }
 
 .ask-again-section.hidden {
     opacity: 0;
     pointer-events: none;
-    display: none;
 }
 
 .ask-again-text {
@@ -593,7 +643,14 @@ textarea::placeholder {
     margin-bottom: var(--space-md);
 }
 
-.ask-again-btn {
+.action-buttons-group {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.continue-btn {
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-glow));
     color: var(--bg-primary);
     border: none;
@@ -606,14 +663,43 @@ textarea::placeholder {
     box-shadow: 0 4px 15px rgba(255, 200, 100, 0.3);
 }
 
-.ask-again-btn:hover {
+.continue-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 200, 100, 0.4);
     filter: brightness(1.1);
 }
 
-.ask-again-btn:active {
+.continue-btn:active {
     transform: translateY(0);
+}
+
+.new-conversation-btn {
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--text-secondary);
+    border-radius: 8px;
+    padding: var(--space-md) var(--space-xl);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-quick);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.new-conversation-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    transform: translateY(-2px);
+}
+
+.new-conversation-btn:active {
+    transform: translateY(0);
+}
+
+.new-conversation-btn svg {
+    flex-shrink: 0;
 }
 
 /*
@@ -674,6 +760,7 @@ textarea::placeholder {
 #output-content {
     font-size: 1rem;
     line-height: 1.5;
+    color: var(--text-primary);
 }
 
 /* Markdown Styling */
