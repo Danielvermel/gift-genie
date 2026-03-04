@@ -242,6 +242,52 @@ function start() {
     });
 }
 
+// Function to show "Try Again" button for error responses
+function showTryAgainButton() {
+    // Create and show a try again button
+    const tryAgainContainer = document.createElement('section');
+    tryAgainContainer.className = 'ask-again-section';
+    tryAgainContainer.id = 'try-again-section';
+    tryAgainContainer.innerHTML = `
+        <p class="ask-again-text">Let's try something else</p>
+        <div class="action-buttons-group">
+            <button id="try-again-btn" class="continue-btn">Try Again</button>
+        </div>
+    `;
+
+    // Remove if already exists
+    const existing = document.getElementById('try-again-section');
+    if (existing) existing.remove();
+
+    // Insert after output section
+    const outputSection = document.querySelector('.output-section');
+    outputSection.insertAdjacentElement('afterend', tryAgainContainer);
+
+    // Add event listener
+    document.getElementById('try-again-btn')?.addEventListener('click', () => {
+        // Clear any pending typing
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
+            typingTimeout = null;
+        }
+        contentQueue = '';
+
+        tryAgainContainer.remove();
+        const inputSection = document.querySelector('.input-section');
+        if (inputSection) inputSection.classList.remove('hidden');
+        const lampContainer = document.querySelector('.lamp-container');
+        if (lampContainer) lampContainer.classList.remove('hidden');
+        outputContent.innerHTML = '';
+        outputContent.parentElement.classList.remove('visible');
+        outputContent.parentElement.classList.add('hidden');
+        userInput.value = '';
+        userInput.style.height = 'auto';
+        userInput.placeholder = 'Try again with something gift-related...';
+        userInput.focus();
+        // Keep sessionId - conversation context preserved
+    });
+}
+
 // Keep all your existing code + this new handleGiftRequest
 async function handleGiftRequest(e) {
     e.preventDefault();
@@ -359,20 +405,20 @@ async function handleGiftRequest(e) {
                                 clearInterval(progressInterval);
                                 progressInterval = null;
                             }
-                            
+
                             // Finish progress bar smoothly
                             progressFill.style.width = "100%";
                             setTimeout(() => {
                                 progressContainer.classList.add("hidden");
                                 const lampContainer = document.querySelector(".lamp-container");
                                 if (lampContainer) lampContainer.classList.add("hidden");
-                                
+
                                 // Reset for next time after it's hidden
                                 setTimeout(() => {
                                     progressFill.style.width = "0%";
                                 }, 500);
                             }, 300);
-                            
+
                             // Clear any pending typing and flush remaining content
                             if (typingTimeout) {
                                 clearTimeout(typingTimeout);
@@ -386,8 +432,16 @@ async function handleGiftRequest(e) {
                                 outputContent.innerHTML = safeHTML;
                                 contentQueue = '';
                             }
-                            
-                            askAgainSection.classList.remove("hidden");
+
+                            // Check if the response is the "don't know how to help" message
+                            const isErrorResponse = fullContent.toLowerCase().includes("don't know how to help");
+
+                            if (isErrorResponse) {
+                                // Show try again button instead of continue/new conversation buttons
+                                showTryAgainButton();
+                            } else {
+                                askAgainSection.classList.remove("hidden");
+                            }
                             break;
                         }
 
@@ -460,7 +514,7 @@ async function handleGiftRequest(e) {
             <p><strong>Oops! The Genie is taking a nap.</strong></p>
             <p>${error.message}</p>
         </div>`;
-        askAgainSection.classList.remove("hidden");
+        showTryAgainButton();
         // Hide progress bar on error
         clearInterval(progressInterval);
         progressContainer.classList.add("hidden");

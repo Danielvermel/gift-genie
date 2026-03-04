@@ -39,6 +39,9 @@ body {
     font-family: "Inter", -apple-system, system-ui, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
+    /* Mobile viewport optimization */
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
 }
 
 a {
@@ -58,7 +61,7 @@ p {
     max-width: 800px;
     margin: 0 auto;
     padding: 1.5rem 1.5rem;
-    min-height: 100vh;
+    min-height: 90vh;
     display: flex;
     flex-direction: column;
 }
@@ -151,7 +154,6 @@ h1 {
 .intro-section {
     text-align: center;
     padding: var(--space-xl) 0;
-    margin-bottom: var(--space-xl);
     animation: fadeInUp 0.8s var(--transition-smooth);
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
@@ -258,7 +260,7 @@ h1 {
 .mobile-advantages {
     list-style: none;
     padding: 0;
-    margin: var(--space-xl) 0 var(--space-xl) 0;
+    margin: var(--space-lg) 0;
     display: block;
 }
 
@@ -638,7 +640,7 @@ textarea::placeholder {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     transition: opacity 0.3s ease;
     position: relative;
-    z-index: 10;
+    z-index: 1;
 }
 
 .ask-again-section.hidden {
@@ -770,6 +772,11 @@ textarea::placeholder {
     font-size: 1rem;
     line-height: 1.5;
     color: var(--text-primary);
+    max-height: 60vh;
+    max-height: 60dvh; /* Dynamic viewport for mobile */
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Markdown Styling */
@@ -893,14 +900,19 @@ textarea::placeholder {
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 10;
+        z-index: 2;
         background-color: var(--bg-primary);
-        min-height: calc(100vh - 100px);
+        max-height: calc(100dvh - 100px); /* Prevent overflow */
         padding: var(--space-xl) 1.25rem;
         margin: 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        overflow: hidden; /* No scroll on intro */
+    }
+
+    .intro-content {
+        overflow: visible; /* Allow content to be visible */
     }
 
     .features-grid {
@@ -908,12 +920,28 @@ textarea::placeholder {
     }
 
     .mobile-advantages {
-        display: block;
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: var(--space-md);
+        padding: var(--space-sm) 0 var(--space-lg) 0;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        position: relative;
+    }
+
+    .mobile-advantages::-webkit-scrollbar {
+        display: none; /* Chrome, Safari */
     }
 
     .mobile-advantages li {
-        padding: var(--space-sm) var(--space-md);
+        flex: 0 0 85%; /* Each card takes 85% of viewport width */
+        padding: var(--space-md);
+        scroll-snap-align: center;
     }
+
 
     .advantage-icon {
         display: none;
@@ -925,7 +953,7 @@ textarea::placeholder {
     }
 
     .main-content.hidden ~ .intro-section {
-        overflow-y: auto;
+        overflow-y: hidden; /* Keep no scroll */
     }
 }
 
@@ -945,8 +973,7 @@ textarea::placeholder {
     }
 
     .intro-section {
-        top: 0px;
-        min-height: calc(100vh - 80px);
+        top: 50px;
         padding: var(--space-lg) 1rem;
     }
 
@@ -975,20 +1002,23 @@ textarea::placeholder {
 
     .intro-title {
         font-size: 1.5rem;
+        margin-bottom: calc(var(--space-sm) / 2);
     }
 
     .intro-subtitle {
         font-size: 1rem;
-        margin-bottom: var(--space-md);
+        margin-bottom: var(--space-sm);
     }
 
     .mobile-advantages li {
-        padding: var(--space-sm);
+        flex: 0 0 90%; /* Each card takes 90% on smaller screens */
+        padding: var(--space-md);
         gap: var(--space-sm);
     }
 
     .advantage-icon {
-        font-size: 1.75rem;
+        font-size: 2rem;
+        display: block; /* Show icon on smaller phones */
     }
 
     .advantage-title {
@@ -1002,7 +1032,8 @@ textarea::placeholder {
     .get-started-btn {
         padding: var(--space-md) var(--space-xl);
         font-size: 1.125rem;
-        margin-bottom: var(--space-lg);
+        margin-bottom: var(--space-md);
+        margin-top: var(--space-md);
     }
 
     .progress-bar {
@@ -1088,4 +1119,46 @@ textarea::placeholder {
     #output-content ol {
         font-size: 1rem;
     }
+}
+
+/* ==========================================================================
+     Footer
+     ========================================================================== */
+
+.app-footer {
+    text-align: center;
+    padding: var(--space-md);
+}
+
+@media (max-width: 768px) {
+    .app-footer {
+        padding: var(--space-sm);
+        z-index: 3;
+        position: fixed;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+.footer-text {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.footer-text a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    transition: color var(--transition-quick);
+}
+
+.footer-text a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
 }
