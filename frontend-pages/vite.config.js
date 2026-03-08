@@ -4,6 +4,7 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), "");
 
     return {
+        base: '/',
         // Proxy API requests to Express backend during development
         server: {
             proxy: {
@@ -12,6 +13,9 @@ export default defineConfig(({ mode }) => {
                     changeOrigin: true,
                 },
             },
+        },
+        build: {
+            outDir: 'dist',
         },
     };
 });

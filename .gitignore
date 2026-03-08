@@ -12,6 +12,8 @@ build/
 .DS_Store
 
 # Env
-.env
+backend-worker/.env
 .env.local
 .env*.local
+
+# Folders

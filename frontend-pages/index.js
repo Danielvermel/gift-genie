@@ -1,7 +1,7 @@
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { autoResizeTextarea, setLoading } from "./utils.js";
-const API_URL = import.meta.env.VITE_NODE_URL || 'http://localhost:4000';  // Dev fallback
+const API_URL = import.meta.env.VITE_NODE_URL || 'http://localhost:8788';  // Dev fallback
 
 // Store session ID to maintain conversation history per user
 let sessionId = localStorage.getItem('giftGenieSessionId') || null;
