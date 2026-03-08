@@ -1,0 +1,12 @@
+name = "gift-genie-backend"
+main = "index.js"
+compatibility_date = "2026-03-08"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENABLE_WEB_SEARCH = "false"
+
+# Secrets (set these via `wrangler secret put <NAME>`):
+# - AI_KEY: Your AI API key
+# - AI_URL: Your AI provider base URL
+# - AI_MODEL: The model name to use
