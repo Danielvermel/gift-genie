@@ -42,6 +42,9 @@ body {
     /* Mobile viewport optimization */
     min-height: 100vh;
     min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    /* Prevent zoom on iOS */
+    touch-action: manipulation;
+    overscroll-behavior: none;
 }
 
 a {

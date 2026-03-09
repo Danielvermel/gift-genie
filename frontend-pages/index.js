@@ -11,6 +11,14 @@ const DEMO_MODE = true;
 const DEMO_TEXT = "My dog's birthday is in a week. Spoiled golden retriever, loves squeaky toys and stealing socks. Budget £15-20.";
 let demoTyped = false;
 
+// Prevent pinch-to-zoom on iOS
+document.addEventListener('gesturestart', (e) => {
+    e.preventDefault();
+});
+document.addEventListener('gesturechange', (e) => {
+    e.preventDefault();
+});
+
 
 // Get UI elements
 const giftForm = document.getElementById("gift-form");
