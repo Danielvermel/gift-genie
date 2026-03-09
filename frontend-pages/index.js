@@ -299,6 +299,7 @@ function start() {
         if (questionsContent) questionsContent.innerHTML = "";
         if (questionsAnswer) questionsAnswer.value = "";
         giftForm.classList.remove('response-active');
+        giftForm.classList.remove('hidden');
         const inputSection = document.querySelector(".input-section");
         if (inputSection) inputSection.classList.remove("hidden");
         const lampContainer = document.querySelector(".lamp-container");
@@ -332,6 +333,7 @@ function start() {
         if (questionsContent) questionsContent.innerHTML = "";
         if (questionsAnswer) questionsAnswer.value = "";
         if (giftForm) giftForm.classList.remove('response-active');
+        if (giftForm) giftForm.classList.remove('hidden');
         const inputSection = document.querySelector(".input-section");
         if (inputSection) inputSection.classList.remove("hidden");
         const lampContainer = document.querySelector(".lamp-container");
@@ -1176,6 +1178,9 @@ async function handleGiftRequest(e) {
                                 const lampContainer = document.querySelector(".lamp-container");
                                 if (lampContainer) lampContainer.classList.add("hidden");
 
+                                // Hide form after response is done
+                                giftForm.classList.add('hidden');
+
                                 // Reset for next time after it's hidden
                                 setTimeout(() => {
                                     progressFill.style.width = "0%";
@@ -1195,7 +1200,7 @@ async function handleGiftRequest(e) {
                                 outputContent.innerHTML = safeHTML;
                                 contentQueue = '';
                             }
-                            
+
                             // Store complete response for chat transition
                             lastAIResponse = fullContent;
 
@@ -1210,7 +1215,7 @@ async function handleGiftRequest(e) {
                                 // Default to standard actions if no metadata was received
                                 standardActions.classList.remove("hidden");
                                 quickActions.classList.add("hidden");
-                                
+
                                 // If chat is active, add AI response to chat
                                 if (isChatActive && fullContent) {
                                     addChatMessage(fullContent, false);
@@ -1332,5 +1337,46 @@ async function handleGiftRequest(e) {
     }
 }
 
+
+// Initialize scroll indicator dots for mobile advantages
+function initScrollIndicators() {
+    const advantagesList = document.getElementById('mobile-advantages');
+    const dotsContainer = document.getElementById('scroll-dots');
+
+    if (!advantagesList || !dotsContainer) return;
+
+    const cards = advantagesList.querySelectorAll('li');
+    if (cards.length === 0) return;
+
+    // Create dots
+    dotsContainer.innerHTML = '';
+    cards.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'scroll-dot';
+        if (index === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+            cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        });
+        dotsContainer.appendChild(dot);
+    });
+
+    // Update active dot on scroll
+    const updateActiveDot = () => {
+        const scrollLeft = advantagesList.scrollLeft;
+        const cardWidth = cards[0].offsetWidth;
+        const gap = parseInt(getComputedStyle(advantagesList).gap) || 0;
+        const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
+
+        const dots = dotsContainer.querySelectorAll('.scroll-dot');
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === activeIndex);
+        });
+    };
+
+    advantagesList.addEventListener('scroll', updateActiveDot);
+}
+
+// Initialize on load
+initScrollIndicators();
 
 start();
