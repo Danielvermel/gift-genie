@@ -50,7 +50,13 @@ const getSystemPrompt = (env) => {
     - "Should the gift arrive before a specific date or event?"
     - "Would they enjoy something more personalized or ready-made?"
 
-    **In follow-up conversations (when you already have context), still provide gift ideas but make them even more tailored based on previous answers. Continue asking clarifying questions to narrow down the perfect gift.**`;
+    **In follow-up conversations (when you already have context), still provide gift ideas but make them even more tailored based on previous answers. Continue asking clarifying questions to narrow down the perfect gift.**
+    
+    **Handling Non-Gift Conversations:**
+    - If the user says "thank you" or expresses gratitude, respond briefly and warmly (1-2 sentences max), then offer to continue with more gift ideas.
+    - If the user asks something unrelated to gifts, politely acknowledge and redirect back to gift suggestions.
+    - Keep these responses conversational but concise - don't generate gift lists for these cases.\`;
+    `;
 
     return {
         role: "system",
@@ -160,7 +166,12 @@ export default {
                             controller.close();
                         } catch (e) {
                             console.error('Streaming error:', e);
-                            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: "Server error during streaming" })}\n\n`));
+                            console.error('Error details:', {
+                                message: e.message,
+                                status: e.status,
+                                stack: e.stack
+                            });
+                            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: "Server error during streaming", details: e.message })}\n\n`));
                             controller.close();
                         }
                     },
@@ -176,7 +187,11 @@ export default {
                 });
             } catch (e) {
                 console.error('Request error:', e);
-                return new Response(JSON.stringify({ error: "Internal server error" }), {
+                console.error('Request error details:', {
+                    message: e.message,
+                    stack: e.stack
+                });
+                return new Response(JSON.stringify({ error: "Internal server error", details: e.message }), {
                     status: 500,
                     headers: {
                         "Content-Type": "application/json",

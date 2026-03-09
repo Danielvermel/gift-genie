@@ -53,6 +53,9 @@ let lastAIResponse = '';
 // Store the initial user prompt for chat transition
 let initialUserPrompt = '';
 
+// Abort controller for canceling in-flight API requests
+let currentAbortController = null;
+
 // Add a chat message to the UI
 function addChatMessage(content, isUser = false) {
     const messageDiv = document.createElement('div');
@@ -240,6 +243,12 @@ function start() {
     });
     
     resetButton?.addEventListener("click", () => {
+        // Cancel any in-flight API request
+        if (currentAbortController) {
+            currentAbortController.abort();
+            currentAbortController = null;
+        }
+
         // Clear any pending typing
         if (typingTimeout) {
             clearTimeout(typingTimeout);
@@ -249,20 +258,38 @@ function start() {
         lastAIResponse = '';
         initialUserPrompt = '';
 
+        // Reset progress bar and hide it
+        progressContainer.classList.add("hidden");
+        progressFill.style.width = "0%";
+
+        // Reset lamp button state and animations
+        const lampButton = document.getElementById("lamp-button");
+        const lampText = document.querySelector(".lamp-text");
+        if (lampButton) {
+            lampButton.classList.remove("loading");
+            lampButton.classList.add("compact");
+            lampButton.disabled = false;
+        }
+        if (lampText) {
+            lampText.textContent = "Rub the Lamp";
+        }
+
         mainContent.classList.add("hidden");
         introSection.classList.remove("hidden");
         document.body.style.overflowY = "hidden";
         userInput.value = "";
         userInput.style.height = "auto";
         outputContent.innerHTML = "";
-        outputContent.parentElement.classList.remove("visible");
-        outputContent.parentElement.classList.add("hidden");
-        askAgainSection.classList.add("hidden");
-        questionsSection.classList.add("hidden");
-        chatSection.classList.add("hidden");
+        if (outputContent.parentElement) {
+            outputContent.parentElement.classList.remove("visible");
+            outputContent.parentElement.classList.add("hidden");
+        }
+        if (askAgainSection) askAgainSection.classList.add("hidden");
+        if (questionsSection) questionsSection.classList.add("hidden");
+        if (chatSection) chatSection.classList.add("hidden");
         clearChatMessages();
-        questionsContent.innerHTML = "";
-        questionsAnswer.value = "";
+        if (questionsContent) questionsContent.innerHTML = "";
+        if (questionsAnswer) questionsAnswer.value = "";
         giftForm.classList.remove('response-active');
         const inputSection = document.querySelector(".input-section");
         if (inputSection) inputSection.classList.remove("hidden");
@@ -271,6 +298,8 @@ function start() {
         // Clear session to start fresh
         sessionId = null;
         localStorage.removeItem('giftGenieSessionId');
+        // Clear chat history
+        chatHistory = [];
     });
 
     clearButton?.addEventListener("click", () => {
@@ -347,7 +376,7 @@ function start() {
             }
 
             // Add previous AI response to chat (gift suggestions)
-            if (aiResponseText && questionsText) {
+            if (aiResponseText) {
                 // Remove questions from the main response for cleaner chat
                 const cleanResponse = aiResponseText.replace(/---\s*\n*#{1,6}\s*Questions for You[\s\S]*/i, '').trim();
                 if (cleanResponse) {
@@ -376,6 +405,9 @@ function start() {
             chatInput.value = "";
             chatInput.style.height = "auto";
             chatInput.focus();
+
+            // Scroll to top to show all chat messages
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 200);
 
         // Keep sessionId - conversation context preserved
@@ -504,7 +536,7 @@ function start() {
             }
 
             // Add previous AI response to chat (gift suggestions)
-            if (aiResponseText && questionsText) {
+            if (aiResponseText) {
                 // Remove questions from the main response for cleaner chat
                 const cleanResponse = aiResponseText.replace(/---\s*\n*#{1,6}\s*Questions for You[\s\S]*/i, '').trim();
                 if (cleanResponse) {
@@ -533,6 +565,9 @@ function start() {
             chatInput.value = "";
             chatInput.style.height = "auto";
             chatInput.focus();
+
+            // Scroll to top to show all chat messages
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 200);
 
         // Keep sessionId - conversation context preserved
@@ -579,6 +614,9 @@ function start() {
 
         // Send request for more ideas
         try {
+            // Create abort controller for this request
+            currentAbortController = new AbortController();
+            
             const response = await fetch(`${API_URL}/api/gift`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -586,6 +624,7 @@ function start() {
                     userPrompt: "Generate more gift ideas based on the previous conversation. Provide different suggestions than before.",
                     sessionId
                 }),
+                signal: currentAbortController.signal,
             });
 
             if (!response.ok) {
@@ -687,6 +726,12 @@ function start() {
             }
 
         } catch (error) {
+            // Ignore abort errors (user clicked logo to cancel)
+            if (error.name === 'AbortError') {
+                console.log('Request aborted by user');
+                return;
+            }
+            
             console.error("error: ", error);
             if (progressInterval) {
                 clearInterval(progressInterval);
@@ -875,10 +920,13 @@ async function handleChatSubmit() {
     
     // Show typing indicator immediately
     showTypingIndicator();
-    
+
     let contentStarted = false;
-    
+
     try {
+        // Create abort controller for this request
+        currentAbortController = new AbortController();
+        
         const response = await fetch(`${API_URL}/api/gift`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -886,6 +934,7 @@ async function handleChatSubmit() {
                 userPrompt: message,
                 sessionId
             }),
+            signal: currentAbortController.signal,
         });
 
         if (!response.ok) {
@@ -949,9 +998,15 @@ async function handleChatSubmit() {
         if (reader) reader.releaseLock();
 
     } catch (error) {
+        // Ignore abort errors (user clicked logo to cancel)
+        if (error.name === 'AbortError') {
+            console.log('Request aborted by user');
+            return;
+        }
+        
         console.error("error: ", error);
         removeTypingIndicator();
-        
+
         // Show error in chat
         addChatMessage(`⚠️ Error: ${error.message}`, false);
     } finally {
@@ -1060,10 +1115,14 @@ async function handleGiftRequest(e) {
     }
 
     try {
+        // Create abort controller for this request
+        currentAbortController = new AbortController();
+        
         const response = await fetch(`${API_URL}/api/gift`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userPrompt, sessionId }),
+            signal: currentAbortController.signal,
         });
 
         if (!response.ok) {
@@ -1213,6 +1272,12 @@ async function handleGiftRequest(e) {
         }
 
     } catch (error) {
+        // Ignore abort errors (user clicked logo to cancel)
+        if (error.name === 'AbortError') {
+            console.log('Request aborted by user');
+            return;
+        }
+        
         console.error("error: ", error);
         // Ensure progress and lamp are handled on error too
         if (progressInterval) {
