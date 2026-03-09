@@ -1643,6 +1643,15 @@ textarea::placeholder {
         justify-content: center;
         width: 100%;
     }
+
+    /* Add bottom padding to prevent footer overlap */
+    .app-container {
+        padding-bottom: 60px;
+    }
+
+    .main-content {
+        padding-bottom: 60px;
+    }
 }
 
 .footer-text {
