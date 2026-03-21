@@ -782,6 +782,12 @@ function start() {
     });
 
     newConversationBtn?.addEventListener("click", () => {
+        // Cancel any in-flight API request
+        if (currentAbortController) {
+            currentAbortController.abort();
+            currentAbortController = null;
+        }
+
         // Clear any pending typing
         if (typingTimeout) {
             clearTimeout(typingTimeout);
@@ -792,11 +798,12 @@ function start() {
         initialUserPrompt = '';
 
         askAgainSection.classList.add("hidden");
-        questionsSection.classList.add("hidden");
+        if (questionsSection) questionsSection.classList.add("hidden");
         chatSection.classList.add("hidden");
+        chatInputContainer.classList.add("hidden");
         clearChatMessages();
-        questionsContent.innerHTML = "";
-        questionsAnswer.value = "";
+        if (questionsContent) questionsContent.innerHTML = "";
+        if (questionsAnswer) questionsAnswer.value = "";
         const inputSection = document.querySelector(".input-section");
         if (inputSection) inputSection.classList.remove("hidden");
         const lampContainer = document.querySelector(".lamp-container");
@@ -807,10 +814,24 @@ function start() {
         userInput.value = "";
         userInput.style.height = "auto";
         userInput.placeholder = "e.g. My friend who loves candles has a birthday coming up in 3 days. 15-20 pounds budget. I live in...";
-        userInput.focus();
+
+        // Reset ask-again-text visibility
+        const askAgainText = askAgainSection.querySelector('.ask-again-text');
+        if (askAgainText) askAgainText.classList.remove('hidden');
+
+        // Reset form state
+        giftForm.classList.remove('response-active');
+        giftForm.classList.remove('hidden');
+
         // Clear session to start fresh
         sessionId = null;
         localStorage.removeItem('giftGenieSessionId');
+
+        // Scroll to the lamp/input area so user can see where to start
+        setTimeout(() => {
+            lampContainer?.scrollIntoView({ behavior: "smooth", block: "center" });
+            userInput.focus();
+        }, 100);
     });
 }
 
@@ -977,6 +998,29 @@ async function handleChatSubmit() {
                         if (fullContent) {
                             addChatMessage(fullContent, false);
                         }
+
+                        // Check if response has questions
+                        const hasQuestions = /#{1,6}\s*Questions for You/i.test(fullContent);
+
+                        // If no questions, hide chat input and show only New Conversation button
+                        if (!hasQuestions) {
+                            chatInputContainer.classList.add('hidden');
+                            askAgainSection.classList.remove('hidden');
+                            quickActions.classList.add('hidden');
+                            standardActions.classList.add('hidden');
+                            
+                            // Hide the "Want to continue the conversation?" text when no questions
+                            const askAgainText = askAgainSection.querySelector('.ask-again-text');
+                            if (askAgainText) askAgainText.classList.add('hidden');
+                        } else {
+                            // Has questions - keep chat input visible
+                            chatInputContainer.classList.remove('hidden');
+                            
+                            // Show the "Want to continue the conversation?" text
+                            const askAgainText = askAgainSection.querySelector('.ask-again-text');
+                            if (askAgainText) askAgainText.classList.remove('hidden');
+                        }
+
                         break;
                     }
 
@@ -1020,10 +1064,12 @@ async function handleChatSubmit() {
         // Show error in chat
         addChatMessage(`⚠️ Error: ${error.message}`, false);
     } finally {
-        // Re-enable input
-        chatInput.disabled = false;
-        chatSubmitBtn.disabled = false;
-        chatInput.focus();
+        // Re-enable input only if chat input is visible
+        if (!chatInputContainer.classList.contains('hidden')) {
+            chatInput.disabled = false;
+            chatSubmitBtn.disabled = false;
+            chatInput.focus();
+        }
     }
 }
 
@@ -1087,6 +1133,8 @@ async function handleGiftRequest(e) {
     let fullContent = '';  // Accumulate for Markdown
     let reader = null;
     let contentReceived = false;  // Track if we've received content
+    let metadataReceived = false; // Track if we've received metadata
+    let hasQuestions = false;    // Track hasQuestions from metadata
 
     // Typing effect function - renders content with delay
     function typeContent(content) {
@@ -1212,9 +1260,19 @@ async function handleGiftRequest(e) {
                                 showTryAgainButton();
                             } else {
                                 askAgainSection.classList.remove("hidden");
-                                // Default to standard actions if no metadata was received
-                                standardActions.classList.remove("hidden");
-                                quickActions.classList.add("hidden");
+                                
+                                // Only show standardActions if we haven't received metadata saying otherwise
+                                if (!metadataReceived) {
+                                    standardActions.classList.remove("hidden");
+                                    quickActions.classList.add("hidden");
+                                } else if (hasQuestions) {
+                                    quickActions.classList.remove("hidden");
+                                    standardActions.classList.add("hidden");
+                                } else {
+                                    // Hide both question-related actions if no questions are found
+                                    quickActions.classList.add("hidden");
+                                    standardActions.classList.add("hidden");
+                                }
 
                                 // If chat is active, add AI response to chat
                                 if (isChatActive && fullContent) {
@@ -1264,12 +1322,15 @@ async function handleGiftRequest(e) {
                                 typeContent(data.content);
                             } else if (data.metadata) {
                                 // Handle metadata (e.g., hasQuestions)
-                                if (data.metadata.hasQuestions) {
+                                metadataReceived = true;
+                                hasQuestions = !!data.metadata.hasQuestions;
+                                if (hasQuestions) {
                                     quickActions.classList.remove("hidden");
                                     standardActions.classList.add("hidden");
                                 } else {
-                                    standardActions.classList.remove("hidden");
+                                    // Hide both question-related actions if no questions are found
                                     quickActions.classList.add("hidden");
+                                    standardActions.classList.add("hidden");
                                 }
                             } else if (data.error) {
                                 throw new Error(data.error);

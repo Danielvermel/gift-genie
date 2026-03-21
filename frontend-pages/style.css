@@ -199,6 +199,7 @@ h1 {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: var(--space-lg);
     margin-bottom: var(--space-xl);
+    order: 1; /* Move features grid before button on desktop */
 }
 
 .feature-card {
@@ -278,6 +279,7 @@ h1 {
     margin-bottom: var(--space-xl);
     margin-top: var(--space-xl);
     box-shadow: 0 4px 15px rgba(255, 200, 100, 0.3);
+    order: 2; /* Move button after features grid on desktop */
 }
 
 .get-started-btn:hover {
@@ -600,7 +602,6 @@ textarea::placeholder {
     margin-top: var(--space-sm);
     opacity: 1;
     font-weight: 500;
-    animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
@@ -1139,6 +1140,10 @@ textarea::placeholder {
     margin-bottom: var(--space-md);
 }
 
+.ask-again-text.hidden {
+    display: none;
+}
+
 .action-buttons-group {
     display: flex;
     gap: var(--space-md);
@@ -1538,6 +1543,7 @@ textarea::placeholder {
     .get-started-btn {
         padding: var(--space-sm) var(--space-lg);
         font-size: 1rem;
+        order: 0; /* Reset order for mobile */
     }
 
     .main-content.hidden ~ .intro-section {

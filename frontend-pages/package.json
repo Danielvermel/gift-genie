@@ -1,6 +1,6 @@
 {
     "name": "gift-genie",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "web app for gift ideas",
     "type": "module",
     "main": "index.js",
