@@ -7,8 +7,8 @@ const API_URL = import.meta.env.VITE_NODE_URL || 'http://localhost:8788';  // De
 let sessionId = localStorage.getItem('giftGenieSessionId') || null;
 
 // 🎬 DEMO MODE: Set to true to show typing effect on first focus (for video demo)
-const DEMO_MODE = true;
-const DEMO_TEXT = "My dog's birthday is in a week. Spoiled golden retriever, loves squeaky toys and stealing socks. Budget £15-20.";
+const DEMO_MODE = false;
+const DEMO_TEXT = "My mom’s birthday is in a week. She loves plants and she is always happy to get lost in a good book";
 let demoTyped = false;
 
 // Prevent pinch-to-zoom on iOS
@@ -131,19 +131,19 @@ function typeDemoText(element, text, baseSpeed = 100) {
     return new Promise((resolve) => {
         let i = 0;
         element.value = "";
-        
+
         // Start after 2 seconds (simulate gathering thoughts)
         setTimeout(() => {
             startTyping();
         }, 2000);
-        
+
         // Mistakes to insert: [position, wrongChar, delayBeforeCorrection]
         const mistakes = [
             { pos: 15, wrong: "x", delay: 150 },  // Type 'x' after "in 2 days"
             { pos: 45, wrong: "s", delay: 200 },  // Type extra 's' near "squeaky"
         ];
         let mistakeIndex = 0;
-        
+
         // Pauses to simulate thinking: [position, delay]
         const pauses = [
             { pos: 20, delay: 1000 },  // Pause after "Spoiled"
@@ -152,11 +152,11 @@ function typeDemoText(element, text, baseSpeed = 100) {
             { pos: 70, delay: 1100 },  // Pause near "Budget"
         ];
         let pauseIndex = 0;
-        
+
         function startTyping() {
             typeChar();
         }
-        
+
         function typeChar() {
             if (i < text.length) {
                 const char = text.charAt(i);
@@ -164,7 +164,7 @@ function typeDemoText(element, text, baseSpeed = 100) {
                 element.style.height = "auto";
                 element.style.height = element.scrollHeight + "px";
                 i++;
-                
+
                 // Check if we should pause (thinking)
                 const pause = pauses.find(p => p.pos === i);
                 if (pause && pauseIndex < pauses.length) {
@@ -174,7 +174,7 @@ function typeDemoText(element, text, baseSpeed = 100) {
                     }, pause.delay);
                     return;
                 }
-                
+
                 // Check if we should insert a mistake
                 const mistake = mistakes.find(m => m.pos === i);
                 if (mistake && mistakeIndex < mistakes.length) {
@@ -184,13 +184,13 @@ function typeDemoText(element, text, baseSpeed = 100) {
                         element.value += mistake.wrong;
                         element.style.height = "auto";
                         element.style.height = element.scrollHeight + "px";
-                        
+
                         setTimeout(() => {
                             // Backspace to remove it
                             element.value = element.value.slice(0, -1);
                             element.style.height = "auto";
                             element.style.height = element.scrollHeight + "px";
-                            
+
                             // Variable speed after correction
                             const nextSpeed = baseSpeed + Math.random() * 40;
                             setTimeout(typeChar, nextSpeed);
@@ -231,7 +231,7 @@ function start() {
             }
         }, { once: true });
     }
-    
+
     // Enter key to submit (Shift+Enter for new line)
     userInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -241,7 +241,7 @@ function start() {
             }
         }
     });
-    
+
     getStartedBtn?.addEventListener("click", () => {
         introSection.classList.add("hidden");
         mainContent.classList.remove("hidden");
@@ -249,7 +249,7 @@ function start() {
         userInput.scrollIntoView({ behavior: "smooth", block: "center" });
         userInput.focus();
     });
-    
+
     resetButton?.addEventListener("click", () => {
         // Cancel any in-flight API request
         if (currentAbortController) {
@@ -427,31 +427,31 @@ function start() {
     function extractQuestions(html) {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
-        
+
         // Find the "Questions for You" heading
         const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
         let questionsHeading = null;
-        
+
         for (const heading of headings) {
             if (heading.textContent.toLowerCase().includes('questions for you')) {
                 questionsHeading = heading;
                 break;
             }
         }
-        
+
         if (!questionsHeading) {
             return html; // Return full content if no questions section found
         }
-        
+
         // Get the heading and all following siblings
         let questionsContent = questionsHeading.outerHTML;
         let sibling = questionsHeading.nextElementSibling;
-        
+
         while (sibling) {
             questionsContent += sibling.outerHTML;
             sibling = sibling.nextElementSibling;
         }
-        
+
         return questionsContent;
     }
 
@@ -626,7 +626,7 @@ function start() {
         try {
             // Create abort controller for this request
             currentAbortController = new AbortController();
-            
+
             const response = await fetch(`${API_URL}/api/gift`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -741,7 +741,7 @@ function start() {
                 console.log('Request aborted by user');
                 return;
             }
-            
+
             console.error("error: ", error);
             if (progressInterval) {
                 clearInterval(progressInterval);
@@ -765,7 +765,7 @@ function start() {
             clearInterval(progressInterval);
             progressContainer.classList.add("hidden");
             progressFill.style.width = "0%";
-            
+
             // Show standard continue button on error
             standardActions.classList.remove("hidden");
             quickActions.classList.add("hidden");
@@ -892,10 +892,10 @@ function showError(message) {
     // Hide progress and lamp
     progressContainer.classList.add('hidden');
     progressFill.style.width = '0%';
-    
+
     const lampContainer = document.querySelector('.lamp-container');
     if (lampContainer) lampContainer.classList.add('hidden');
-    
+
     const inputSection = document.querySelector('.input-section');
     if (inputSection) inputSection.classList.remove('hidden');
 
@@ -905,10 +905,10 @@ function showError(message) {
         <p><strong>No Internet Connection</strong></p>
         <p>${message}</p>
     </div>`;
-    
+
     outputContent.parentElement.classList.remove('hidden');
     outputContent.parentElement.classList.add('visible');
-    
+
     // Reset lamp button
     const lampButton = document.getElementById('lamp-button');
     const lampText = document.querySelector('.lamp-text');
@@ -916,7 +916,7 @@ function showError(message) {
     lampButton.classList.add('compact');
     lampText.textContent = 'Rub the Lamp';
     lampButton.disabled = false;
-    
+
     // Show standard actions
     standardActions.classList.remove('hidden');
     quickActions.classList.add('hidden');
@@ -940,15 +940,15 @@ async function handleChatSubmit() {
 
     // Add user message to chat
     addChatMessage(message, true);
-    
+
     // Clear input
     chatInput.value = '';
     chatInput.style.height = 'auto';
-    
+
     // Disable input while waiting
     chatInput.disabled = true;
     chatSubmitBtn.disabled = true;
-    
+
     // Show typing indicator immediately
     showTypingIndicator();
 
@@ -957,7 +957,7 @@ async function handleChatSubmit() {
     try {
         // Create abort controller for this request
         currentAbortController = new AbortController();
-        
+
         const response = await fetch(`${API_URL}/api/gift`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1008,14 +1008,14 @@ async function handleChatSubmit() {
                             askAgainSection.classList.remove('hidden');
                             quickActions.classList.add('hidden');
                             standardActions.classList.add('hidden');
-                            
+
                             // Hide the "Want to continue the conversation?" text when no questions
                             const askAgainText = askAgainSection.querySelector('.ask-again-text');
                             if (askAgainText) askAgainText.classList.add('hidden');
                         } else {
                             // Has questions - keep chat input visible
                             chatInputContainer.classList.remove('hidden');
-                            
+
                             // Show the "Want to continue the conversation?" text
                             const askAgainText = askAgainSection.querySelector('.ask-again-text');
                             if (askAgainText) askAgainText.classList.remove('hidden');
@@ -1057,7 +1057,7 @@ async function handleChatSubmit() {
             console.log('Request aborted by user');
             return;
         }
-        
+
         console.error("error: ", error);
         removeTypingIndicator();
 
@@ -1139,9 +1139,9 @@ async function handleGiftRequest(e) {
     // Typing effect function - renders content with delay
     function typeContent(content) {
         contentQueue += content;
-        
+
         if (typingTimeout) return;  // Already typing
-        
+
         function typeNextChar() {
             if (contentQueue.length > 0) {
                 // If queue is getting long, increase chunk size to catch up
@@ -1152,30 +1152,30 @@ async function handleGiftRequest(e) {
 
                 const chunk = contentQueue.slice(0, chunkSize);
                 contentQueue = contentQueue.slice(chunkSize);
-                
+
                 fullContent += chunk;
                 const html = marked.parse(fullContent);
                 const safeHTML = DOMPurify.sanitize(html);
                 outputContent.innerHTML = safeHTML;
                 outputContent.scrollTop = outputContent.scrollHeight;
-                
+
                 // Adjust speed based on queue length (faster if queue is long)
                 let typingSpeed = Math.random() * 30 + 10;
                 if (contentQueue.length > 100) typingSpeed = 5;
-                
+
                 typingTimeout = setTimeout(typeNextChar, typingSpeed);
             } else {
                 typingTimeout = null;
             }
         }
-        
+
         typeNextChar();
     }
 
     try {
         // Create abort controller for this request
         currentAbortController = new AbortController();
-        
+
         const response = await fetch(`${API_URL}/api/gift`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1260,7 +1260,7 @@ async function handleGiftRequest(e) {
                                 showTryAgainButton();
                             } else {
                                 askAgainSection.classList.remove("hidden");
-                                
+
                                 // Only show standardActions if we haven't received metadata saying otherwise
                                 if (!metadataReceived) {
                                     standardActions.classList.remove("hidden");
@@ -1351,7 +1351,7 @@ async function handleGiftRequest(e) {
             console.log('Request aborted by user');
             return;
         }
-        
+
         console.error("error: ", error);
         // Ensure progress and lamp are handled on error too
         if (progressInterval) {
@@ -1388,7 +1388,7 @@ async function handleGiftRequest(e) {
         // Keep lamp hidden - only show when user clicks continue/new conversation
         const lampContainer = document.querySelector(".lamp-container");
         if (lampContainer) lampContainer.classList.add("hidden");
-        
+
         lampButton.classList.remove("loading");
         lampButton.classList.add("compact");
         lampText.textContent = "Rub the Lamp";

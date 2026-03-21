@@ -60,9 +60,9 @@ hr {
     margin: 10px 0;
 }
 
-    /*
-         Layout
-      */
+/*
+     Layout
+  */
 
 .app-container {
     max-width: 800px;
@@ -1053,7 +1053,7 @@ textarea::placeholder {
 }
 
 .chat-output-content li > p:first-child > strong   {
-   text-decoration: underline;
+    text-decoration: underline;
     font-size: 1.1em;
 }
 
@@ -1377,7 +1377,7 @@ textarea::placeholder {
     color: var(--accent-primary);
 }
 
-/* 
+/*
      Utilities
   */
 
@@ -1576,7 +1576,7 @@ textarea::placeholder {
         height: 72px;
     }
 
-   .title-group > h1 {
+    .title-group > h1 {
         font-size: 2rem;
     }
 
